@@ -4,17 +4,26 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Photo Share Gallery</title>
-    <link rel="stylesheet" href="/styles.css?v=23" />
+    <link rel="stylesheet" href="/styles.css?v=52" />
   </head>
   <body>
     <div class="page-shell">
+      <section class="brand-bar">
+        <div class="brand-mark" aria-hidden="true">AG</div>
+        <div class="brand-copy">
+          <p class="brand-kicker">Atlas Gallery</p>
+          <p class="brand-sub">Professional media showcase workspace</p>
+        </div>
+        <span class="brand-badge">PRO</span>
+      </section>
+
       <header class="hero">
         <div>
-          <p class="eyebrow">Local media library</p>
-          <h1>Photo Share Gallery</h1>
+          <p class="eyebrow">Commercial-ready media platform</p>
+          <h1>Atlas Gallery Pro</h1>
           <p class="hero-copy">
-            Browse folders, preview images and videos, and see which archives still need to
-            be extracted.
+            Curate folders, spotlight media, and manage a production-grade library with faster
+            navigation and polished presentation controls.
           </p>
         </div>
         <div class="stats" id="stats"></div>
@@ -27,7 +36,13 @@
           placeholder="Search a folder name"
           autocomplete="off"
         />
-        <button id="refreshButton" type="button">Refresh index</button>
+        <button id="refreshButton" type="button" aria-label="Search folders" title="Search folders">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="11" cy="11" r="6.2" fill="none" stroke="currentColor" stroke-width="2"></circle>
+            <path d="M16 16l4.2 4.2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+          </svg>
+          <span>Search</span>
+        </button>
       </section>
 
       <section class="theme-switcher" aria-label="Appearance presets">
@@ -36,6 +51,68 @@
         <button type="button" class="theme-chip" data-theme-option="paper">Paper</button>
         <button type="button" class="theme-chip" data-theme-option="studio">Studio</button>
         <button type="button" class="theme-chip" data-theme-option="forest">Forest</button>
+      </section>
+
+      <section class="pro-controls" aria-label="Library controls">
+        <div class="control-group">
+          <label for="albumScopeSelect">Folder Scope</label>
+          <select id="albumScopeSelect">
+            <option value="all">All folders</option>
+            <option value="favorites">Favorites only</option>
+            <option value="recent">Recently opened</option>
+          </select>
+        </div>
+        <div class="control-group">
+          <label for="albumSortSelect">Folder Sort</label>
+          <select id="albumSortSelect">
+            <option value="name-asc">Name A-Z</option>
+            <option value="name-desc">Name Z-A</option>
+            <option value="items-desc">Most media first</option>
+          </select>
+        </div>
+        <div class="control-group">
+          <label for="subfolderScopeSelect">Subfolder Scope</label>
+          <select id="subfolderScopeSelect">
+            <option value="all">All subfolders</option>
+            <option value="favorites">Favorites only</option>
+            <option value="recent">Recently opened</option>
+          </select>
+        </div>
+        <div class="control-group">
+          <label for="subfolderSortSelect">Subfolder Sort</label>
+          <select id="subfolderSortSelect">
+            <option value="name-asc">Name A-Z</option>
+            <option value="name-desc">Name Z-A</option>
+            <option value="items-desc">Most media first</option>
+          </select>
+        </div>
+        <div class="control-group">
+          <label for="mediaTypeSelect">Media Type</label>
+          <select id="mediaTypeSelect">
+            <option value="all">Images + Videos</option>
+            <option value="image">Images only</option>
+            <option value="video">Videos only</option>
+          </select>
+        </div>
+        <div class="control-group">
+          <label for="mediaSortSelect">Media Sort</label>
+          <select id="mediaSortSelect">
+            <option value="name-asc">Name A-Z</option>
+            <option value="name-desc">Name Z-A</option>
+          </select>
+        </div>
+        <div class="control-group">
+          <label for="subfolderCardSizeRange">Subfolder Card Size</label>
+          <div class="range-control">
+            <input id="subfolderCardSizeRange" type="range" min="180" max="360" step="10" value="220" />
+            <span id="subfolderCardSizeValue">220px</span>
+          </div>
+        </div>
+      </section>
+
+      <section id="quickAccess" class="quick-access" hidden>
+        <p class="quick-access-label">Recent folders</p>
+        <div id="recentAlbumChips" class="quick-access-chips"></div>
       </section>
 
       <main class="layout">
@@ -72,19 +149,40 @@
       <div class="viewer-backdrop" data-viewer-close></div>
       <section class="viewer-panel" role="dialog" aria-modal="true" aria-label="Media viewer">
         <p id="viewerCaption"></p>
-        <div class="viewer-stage">
-          <img id="viewerImage" alt="" />
-          <video id="viewerVideo" controls playsinline preload="metadata" hidden></video>
+        <div class="viewer-content-row">
+          <section class="viewer-filmstrip-wrap" aria-label="Media thumbnails">
+            <p class="viewer-filmstrip-title">Thumbnails</p>
+            <div id="viewerFilmstrip" class="viewer-filmstrip"></div>
+          </section>
+          <div class="viewer-stage">
+            <img id="viewerImage" alt="" />
+            <video id="viewerVideo" controls playsinline preload="metadata" hidden></video>
+          </div>
         </div>
         <div class="viewer-toolbar">
-          <button id="viewerPrev" class="viewer-nav-button" type="button" aria-label="Previous media">Previous</button>
-          <button id="closeViewer" class="close-viewer" type="button">Close</button>
-          <button id="viewerNext" class="viewer-nav-button" type="button" aria-label="Next media">Next</button>
+          <button id="viewerPrev" class="viewer-nav-button icon-button" type="button" aria-label="Previous media" title="Previous">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M14.8 5.4L8.2 12l6.6 6.6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+            <span class="sr-only">Previous</span>
+          </button>
+          <button id="closeViewer" class="close-viewer icon-button" type="button" aria-label="Close viewer" title="Close">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"></path>
+            </svg>
+            <span class="sr-only">Close</span>
+          </button>
+          <button id="viewerNext" class="viewer-nav-button icon-button" type="button" aria-label="Next media" title="Next">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M9.2 5.4L15.8 12l-6.6 6.6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+            <span class="sr-only">Next</span>
+          </button>
         </div>
       </section>
     </div>
 
-    <script src="/app.js?v=37"></script>
+    <script src="/app.js?v=49"></script>
   </body>
 </html>
 
