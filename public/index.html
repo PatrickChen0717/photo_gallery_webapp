@@ -1,0 +1,90 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Photo Share Gallery</title>
+    <link rel="stylesheet" href="/styles.css?v=22" />
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="hero">
+        <div>
+          <p class="eyebrow">Local media library</p>
+          <h1>Photo Share Gallery</h1>
+          <p class="hero-copy">
+            Browse folders, preview images and videos, and see which archives still need to
+            be extracted.
+          </p>
+        </div>
+        <div class="stats" id="stats"></div>
+      </header>
+
+      <section class="toolbar">
+        <input
+          id="searchInput"
+          type="search"
+          placeholder="Search a folder name"
+          autocomplete="off"
+        />
+        <button id="refreshButton" type="button">Refresh index</button>
+      </section>
+
+      <section class="theme-switcher" aria-label="Appearance presets">
+        <span class="theme-label">Appearance</span>
+        <button type="button" class="theme-chip" data-theme-option="warm">Warm</button>
+        <button type="button" class="theme-chip" data-theme-option="paper">Paper</button>
+        <button type="button" class="theme-chip" data-theme-option="studio">Studio</button>
+        <button type="button" class="theme-chip" data-theme-option="forest">Forest</button>
+      </section>
+
+      <main class="layout">
+        <section class="panel folder-panel">
+          <div class="panel-header">
+            <h2>Folders</h2>
+            <div class="folder-panel-actions">
+              <span id="albumCount"></span>
+              <button id="focusFoldersButton" type="button" class="panel-toggle-button" aria-label="Focus folders" title="Focus folders">
+  <svg class="panel-toggle-icon panel-toggle-icon-focus" aria-hidden="true" viewBox="0 0 24 24">
+    <rect x="4" y="4" width="16" height="16" rx="2" fill="none" stroke="currentColor" stroke-width="2"></rect>
+    <rect x="8" y="8" width="8" height="8" rx="1" fill="currentColor"></rect>
+  </svg>
+  <svg class="panel-toggle-icon panel-toggle-icon-detail" aria-hidden="true" viewBox="0 0 24 24">
+    <rect x="4" y="5" width="16" height="3" rx="1.5" fill="currentColor"></rect>
+    <rect x="4" y="10.5" width="16" height="3" rx="1.5" fill="currentColor"></rect>
+    <rect x="4" y="16" width="16" height="3" rx="1.5" fill="currentColor"></rect>
+  </svg>
+</button>
+            </div>
+          </div>
+          <div id="albumList" class="album-list"></div>
+        </section>
+
+        <section class="panel detail-panel">
+          <div id="albumDetail" class="album-detail empty-state">
+            Select a folder to load its media grid.
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <div id="viewer" class="viewer-overlay" hidden>
+      <div class="viewer-backdrop" data-viewer-close></div>
+      <section class="viewer-panel" role="dialog" aria-modal="true" aria-label="Media viewer">
+        <p id="viewerCaption"></p>
+        <div class="viewer-stage">
+          <img id="viewerImage" alt="" />
+          <video id="viewerVideo" controls playsinline preload="metadata" hidden></video>
+        </div>
+        <div class="viewer-toolbar">
+          <button id="viewerPrev" class="viewer-nav-button" type="button" aria-label="Previous media">Previous</button>
+          <button id="closeViewer" class="close-viewer" type="button">Close</button>
+          <button id="viewerNext" class="viewer-nav-button" type="button" aria-label="Next media">Next</button>
+        </div>
+      </section>
+    </div>
+
+    <script src="/app.js?v=36"></script>
+  </body>
+</html>
+

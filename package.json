@@ -1,0 +1,9 @@
+{
+  "name": "photo-share-gallery",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Local web app for browsing and sharing images from the photo archive.",
+  "scripts": {
+    "start": "node server.js"
+  }
+}
