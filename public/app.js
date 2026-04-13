@@ -11,6 +11,7 @@ const LAYOUT_STORAGE_KEY = "photo-share-gallery-layout";
 const VIDEO_EXTENSIONS = new Set([".mp4", ".webm", ".mov", ".m4v"]);
 const MAX_PREVIEW_HEIGHT_RATIO = 4;
 const PREVIEW_SLOTS = 4;
+const VIEWER_ANIM_MS = 180;
 
 const state = {
   albums: [],
@@ -22,6 +23,7 @@ const state = {
     items: [],
     currentIndex: -1
   },
+  viewerCloseTimer: null,
   virtualizer: {
     resizeObserver: null,
     scrollTarget: null,
@@ -57,9 +59,36 @@ elements.viewerBackdrop = elements.viewer.querySelector(".viewer-backdrop");
 elements.viewerPanel = elements.viewer.querySelector(".viewer-panel");
 
 function setViewerVisibility(isOpen) {
-  elements.viewer.hidden = !isOpen;
-  elements.viewer.classList.toggle("is-open", isOpen);
-  document.body.style.overflow = isOpen ? "hidden" : "";
+  if (state.viewerCloseTimer) {
+    clearTimeout(state.viewerCloseTimer);
+    state.viewerCloseTimer = null;
+  }
+
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  if (isOpen) {
+    elements.viewer.hidden = false;
+    elements.viewer.classList.remove("is-closing");
+    elements.viewer.classList.add("is-open");
+    document.body.style.overflow = "hidden";
+    return;
+  }
+
+  if (reduceMotion) {
+    elements.viewer.classList.remove("is-open", "is-closing");
+    elements.viewer.hidden = true;
+    document.body.style.overflow = "";
+    return;
+  }
+
+  elements.viewer.classList.remove("is-open");
+  elements.viewer.classList.add("is-closing");
+  state.viewerCloseTimer = setTimeout(() => {
+    elements.viewer.classList.remove("is-closing");
+    elements.viewer.hidden = true;
+    document.body.style.overflow = "";
+    state.viewerCloseTimer = null;
+  }, VIEWER_ANIM_MS);
 }
 
 function formatNumber(value) {
@@ -237,6 +266,11 @@ function renderAlbums(albums) {
   elements.albumList.querySelectorAll(".album-preview").forEach((container) => {
     hydratePreviewGridImages(container);
   });
+
+  elements.albumList.querySelectorAll(".album-card").forEach((card, index) => {
+    card.classList.add("reveal-item");
+    card.style.setProperty("--stagger-index", String(index % 12));
+  });
 }
 
 function cleanupVirtualizer() {
@@ -286,10 +320,25 @@ function setMobilePane(mode) {
   if (isWindowScrollMode()) {
     folderPanel.style.display = mode === "detail" ? "none" : "";
     detailPanel.style.display = mode === "folders" ? "none" : "";
+    const activePanel = mode === "detail" ? detailPanel : folderPanel;
+    triggerPaneReveal(activePanel);
   } else {
     folderPanel.style.display = "";
     detailPanel.style.display = "";
   }
+}
+
+function triggerPaneReveal(panelElement) {
+  if (!panelElement || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    return;
+  }
+
+  panelElement.classList.remove("pane-reveal");
+  panelElement.offsetHeight;
+  panelElement.classList.add("pane-reveal");
+  setTimeout(() => {
+    panelElement.classList.remove("pane-reveal");
+  }, 320);
 }
 
 function getScrollTarget() {
@@ -790,6 +839,11 @@ function renderAlbumDetail(album) {
 
   elements.albumDetail.querySelectorAll(".subfolder-preview").forEach((container) => {
     hydratePreviewGridImages(container);
+  });
+
+  elements.albumDetail.querySelectorAll(".subfolder-card, .video-card").forEach((card, index) => {
+    card.classList.add("reveal-item");
+    card.style.setProperty("--stagger-index", String(index % 12));
   });
 
   elements.albumDetail.querySelectorAll("[data-video-path]").forEach((button) => {
