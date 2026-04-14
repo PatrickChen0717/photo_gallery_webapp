@@ -1629,7 +1629,6 @@ function renderAlbumDetail(album) {
 	            </svg>
 	            <span class="sr-only">${t("back_to_all_folders")}</span>
 	          </button>
-	          <button type="button" class="mobile-folder-back-button" data-mobile-show-folders>${t("folder_list")}</button>
 	        </div>
 	      </div>
 	      ${archivesMarkup}
