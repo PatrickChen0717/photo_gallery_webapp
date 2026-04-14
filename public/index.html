@@ -3,125 +3,144 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Photo Share Gallery</title>
-    <link rel="stylesheet" href="/styles.css?v=52" />
+    <title data-i18n="page_title">Photo Share Gallery</title>
+    <link rel="stylesheet" href="/styles.css?v=69" />
   </head>
   <body>
     <div class="page-shell">
       <section class="brand-bar">
         <div class="brand-mark" aria-hidden="true">AG</div>
         <div class="brand-copy">
-          <p class="brand-kicker">Atlas Gallery</p>
-          <p class="brand-sub">Professional media showcase workspace</p>
+          <p class="brand-kicker" data-i18n="brand_kicker">Atlas Gallery</p>
+          <p class="brand-sub" data-i18n="brand_sub">Professional media showcase workspace</p>
         </div>
         <span class="brand-badge">PRO</span>
       </section>
 
       <header class="hero">
         <div>
-          <p class="eyebrow">Commercial-ready media platform</p>
-          <h1>Atlas Gallery Pro</h1>
-          <p class="hero-copy">
-            Curate folders, spotlight media, and manage a production-grade library with faster
+          <p class="eyebrow" data-i18n="hero_eyebrow">Commercial-ready media platform</p>
+          <h1 data-i18n="hero_title">Atlas Gallery Pro</h1>
+          <p class="hero-copy" data-i18n="hero_copy">
+            Curate collections, spotlight media, and manage a production-grade library with faster
             navigation and polished presentation controls.
           </p>
         </div>
-        <div class="stats" id="stats"></div>
+        <div class="hero-visual">
+          <div class="stats" id="stats"></div>
+        </div>
       </header>
 
       <section class="toolbar">
         <input
           id="searchInput"
           type="search"
-          placeholder="Search a folder name"
+          placeholder="Search a collection name"
+          data-i18n-placeholder="search_placeholder"
           autocomplete="off"
         />
-        <button id="refreshButton" type="button" aria-label="Search folders" title="Search folders">
+        <button id="refreshButton" type="button" aria-label="Search collections" title="Search collections" data-i18n-aria-label="search_folders" data-i18n-title="search_folders">
           <svg viewBox="0 0 24 24" aria-hidden="true">
             <circle cx="11" cy="11" r="6.2" fill="none" stroke="currentColor" stroke-width="2"></circle>
             <path d="M16 16l4.2 4.2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
           </svg>
-          <span>Search</span>
+          <span data-i18n="search">Search</span>
         </button>
       </section>
 
-      <section class="theme-switcher" aria-label="Appearance presets">
-        <span class="theme-label">Appearance</span>
-        <button type="button" class="theme-chip" data-theme-option="warm">Warm</button>
-        <button type="button" class="theme-chip" data-theme-option="paper">Paper</button>
-        <button type="button" class="theme-chip" data-theme-option="studio">Studio</button>
-        <button type="button" class="theme-chip" data-theme-option="forest">Forest</button>
-      </section>
+      <section class="settings-dropdown" aria-label="Display and sorting controls" data-i18n-aria-label="display_sort_controls">
+        <details class="settings-details">
+          <summary class="settings-summary">
+            <span data-i18n="appearance_sorting">Appearance & Sorting</span>
+            <span class="settings-chevron" aria-hidden="true">▾</span>
+          </summary>
+          <div class="settings-content">
+            <section class="theme-switcher" aria-label="Appearance presets" data-i18n-aria-label="appearance_presets">
+              <span class="theme-label" data-i18n="appearance">Appearance</span>
+              <button type="button" class="theme-chip" data-theme-option="warm" data-i18n="theme_warm">Warm</button>
+              <button type="button" class="theme-chip" data-theme-option="paper" data-i18n="theme_paper">Paper</button>
+              <button type="button" class="theme-chip" data-theme-option="studio" data-i18n="theme_studio">Studio</button>
+              <button type="button" class="theme-chip" data-theme-option="forest" data-i18n="theme_forest">Forest</button>
+            </section>
+            <section class="theme-switcher" aria-label="Language" data-i18n-aria-label="language">
+              <span class="theme-label" data-i18n="language">Language</span>
+              <button type="button" class="theme-chip" data-lang-option="en">English</button>
+              <button type="button" class="theme-chip" data-lang-option="zh">中文</button>
+            </section>
 
-      <section class="pro-controls" aria-label="Library controls">
-        <div class="control-group">
-          <label for="albumScopeSelect">Folder Scope</label>
-          <select id="albumScopeSelect">
-            <option value="all">All folders</option>
-            <option value="favorites">Favorites only</option>
-            <option value="recent">Recently opened</option>
-          </select>
-        </div>
-        <div class="control-group">
-          <label for="albumSortSelect">Folder Sort</label>
-          <select id="albumSortSelect">
-            <option value="name-asc">Name A-Z</option>
-            <option value="name-desc">Name Z-A</option>
-            <option value="items-desc">Most media first</option>
-          </select>
-        </div>
-        <div class="control-group">
-          <label for="subfolderScopeSelect">Subfolder Scope</label>
-          <select id="subfolderScopeSelect">
-            <option value="all">All subfolders</option>
-            <option value="favorites">Favorites only</option>
-            <option value="recent">Recently opened</option>
-          </select>
-        </div>
-        <div class="control-group">
-          <label for="subfolderSortSelect">Subfolder Sort</label>
-          <select id="subfolderSortSelect">
-            <option value="name-asc">Name A-Z</option>
-            <option value="name-desc">Name Z-A</option>
-            <option value="items-desc">Most media first</option>
-          </select>
-        </div>
-        <div class="control-group">
-          <label for="mediaTypeSelect">Media Type</label>
-          <select id="mediaTypeSelect">
-            <option value="all">Images + Videos</option>
-            <option value="image">Images only</option>
-            <option value="video">Videos only</option>
-          </select>
-        </div>
-        <div class="control-group">
-          <label for="mediaSortSelect">Media Sort</label>
-          <select id="mediaSortSelect">
-            <option value="name-asc">Name A-Z</option>
-            <option value="name-desc">Name Z-A</option>
-          </select>
-        </div>
-        <div class="control-group">
-          <label for="subfolderCardSizeRange">Subfolder Card Size</label>
-          <div class="range-control">
-            <input id="subfolderCardSizeRange" type="range" min="180" max="360" step="10" value="220" />
-            <span id="subfolderCardSizeValue">220px</span>
+            <section class="pro-controls" aria-label="Library controls" data-i18n-aria-label="library_controls">
+              <div class="control-group">
+                <label for="albumScopeSelect" data-i18n="folder_scope">Collection Scope</label>
+                <select id="albumScopeSelect">
+                  <option value="all" data-i18n="all_folders">All collections</option>
+                  <option value="favorites" data-i18n="favorites_only">Favorites only</option>
+                  <option value="recent" data-i18n="recently_opened">Recently opened</option>
+                </select>
+              </div>
+              <div class="control-group">
+                <label for="albumSortSelect" data-i18n="folder_sort">Collection Sort</label>
+                <select id="albumSortSelect">
+                  <option value="name-asc" data-i18n="name_asc">Name A-Z</option>
+                  <option value="name-desc" data-i18n="name_desc">Name Z-A</option>
+                  <option value="items-desc" data-i18n="most_media_first">Most media first</option>
+                </select>
+              </div>
+              <div class="control-group">
+                <label for="subfolderScopeSelect" data-i18n="subfolder_scope">Collection Scope</label>
+                <select id="subfolderScopeSelect">
+                  <option value="all" data-i18n="all_subfolders">All collections</option>
+                  <option value="favorites" data-i18n="favorites_only">Favorites only</option>
+                  <option value="recent" data-i18n="recently_opened">Recently opened</option>
+                </select>
+              </div>
+              <div class="control-group">
+                <label for="subfolderSortSelect" data-i18n="subfolder_sort">Collection Sort</label>
+                <select id="subfolderSortSelect">
+                  <option value="name-asc" data-i18n="name_asc">Name A-Z</option>
+                  <option value="name-desc" data-i18n="name_desc">Name Z-A</option>
+                  <option value="items-desc" data-i18n="most_media_first">Most media first</option>
+                </select>
+              </div>
+              <div class="control-group">
+                <label for="mediaTypeSelect" data-i18n="media_type">Media Type</label>
+                <select id="mediaTypeSelect">
+                  <option value="all" data-i18n="images_videos">Images + Videos</option>
+                  <option value="image" data-i18n="images_only">Images only</option>
+                  <option value="video" data-i18n="videos_only">Videos only</option>
+                </select>
+              </div>
+              <div class="control-group">
+                <label for="mediaSortSelect" data-i18n="media_sort">Media Sort</label>
+                <select id="mediaSortSelect">
+                  <option value="name-asc" data-i18n="name_asc">Name A-Z</option>
+                  <option value="name-desc" data-i18n="name_desc">Name Z-A</option>
+                </select>
+              </div>
+              <div class="control-group">
+                <label for="subfolderCardSizeRange" data-i18n="subfolder_card_size">Collection Card Size</label>
+                <div class="range-control">
+                  <input id="subfolderCardSizeRange" type="range" min="180" max="360" step="10" value="220" />
+                  <span id="subfolderCardSizeValue">220px</span>
+                </div>
+              </div>
+            </section>
           </div>
-        </div>
+        </details>
       </section>
 
       <section id="quickAccess" class="quick-access" hidden>
-        <p class="quick-access-label">Recent folders</p>
+        <p class="quick-access-label" data-i18n="recent_folders">Recent collections</p>
         <div id="recentAlbumChips" class="quick-access-chips"></div>
       </section>
+
 
       <main class="layout">
         <section class="panel folder-panel">
           <div class="panel-header">
-            <h2>Folders</h2>
+            <h2 data-i18n="folders">Collections</h2>
             <div class="folder-panel-actions">
               <span id="albumCount"></span>
-              <button id="focusFoldersButton" type="button" class="panel-toggle-button" aria-label="Focus folders" title="Focus folders">
+              <button id="focusFoldersButton" type="button" class="panel-toggle-button" aria-label="Focus collections" title="Focus collections" data-i18n-aria-label="focus_folders" data-i18n-title="focus_folders">
   <svg class="panel-toggle-icon panel-toggle-icon-focus" aria-hidden="true" viewBox="0 0 24 24">
     <rect x="4" y="4" width="16" height="16" rx="2" fill="none" stroke="currentColor" stroke-width="2"></rect>
     <rect x="8" y="8" width="8" height="8" rx="1" fill="currentColor"></rect>
@@ -139,7 +158,7 @@
 
         <section class="panel detail-panel">
           <div id="albumDetail" class="album-detail empty-state">
-            Select a folder to load its media grid.
+            <span data-i18n="select_folder_prompt">Select a collection to load its media grid.</span>
           </div>
         </section>
       </main>
@@ -147,11 +166,11 @@
 
     <div id="viewer" class="viewer-overlay" hidden>
       <div class="viewer-backdrop" data-viewer-close></div>
-      <section class="viewer-panel" role="dialog" aria-modal="true" aria-label="Media viewer">
+      <section class="viewer-panel" role="dialog" aria-modal="true" aria-label="Media viewer" data-i18n-aria-label="media_viewer">
         <p id="viewerCaption"></p>
         <div class="viewer-content-row">
-          <section class="viewer-filmstrip-wrap" aria-label="Media thumbnails">
-            <p class="viewer-filmstrip-title">Thumbnails</p>
+          <section class="viewer-filmstrip-wrap" aria-label="Media thumbnails" data-i18n-aria-label="media_thumbnails">
+            <p class="viewer-filmstrip-title" data-i18n="thumbnails">Thumbnails</p>
             <div id="viewerFilmstrip" class="viewer-filmstrip"></div>
           </section>
           <div class="viewer-stage">
@@ -160,29 +179,29 @@
           </div>
         </div>
         <div class="viewer-toolbar">
-          <button id="viewerPrev" class="viewer-nav-button icon-button" type="button" aria-label="Previous media" title="Previous">
+          <button id="viewerPrev" class="viewer-nav-button icon-button" type="button" aria-label="Previous media" title="Previous" data-i18n-aria-label="previous_media" data-i18n-title="previous">
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <path d="M14.8 5.4L8.2 12l6.6 6.6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path>
             </svg>
-            <span class="sr-only">Previous</span>
+            <span class="sr-only" data-i18n="previous">Previous</span>
           </button>
-          <button id="closeViewer" class="close-viewer icon-button" type="button" aria-label="Close viewer" title="Close">
+          <button id="closeViewer" class="close-viewer icon-button" type="button" aria-label="Close viewer" title="Close" data-i18n-aria-label="close_viewer" data-i18n-title="close">
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"></path>
             </svg>
-            <span class="sr-only">Close</span>
+            <span class="sr-only" data-i18n="close">Close</span>
           </button>
-          <button id="viewerNext" class="viewer-nav-button icon-button" type="button" aria-label="Next media" title="Next">
+          <button id="viewerNext" class="viewer-nav-button icon-button" type="button" aria-label="Next media" title="Next" data-i18n-aria-label="next_media" data-i18n-title="next">
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <path d="M9.2 5.4L15.8 12l-6.6 6.6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path>
             </svg>
-            <span class="sr-only">Next</span>
+            <span class="sr-only" data-i18n="next">Next</span>
           </button>
         </div>
       </section>
     </div>
 
-    <script src="/app.js?v=49"></script>
+    <script src="/app.js?v=58"></script>
   </body>
 </html>
 

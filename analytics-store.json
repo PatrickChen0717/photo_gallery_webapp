@@ -1,0 +1,28 @@
+{
+  "version": 1,
+  "updatedAt": "2026-04-14T03:02:13.238Z",
+  "totalEvents": 5,
+  "eventCounts": {
+    "album_view": 2,
+    "subfolder_view": 1,
+    "media_view": 2
+  },
+  "albumViews": {
+    "Bambi（밤비）": 1,
+    "51酱": 1
+  },
+  "subfolderViews": {
+    "51酱 / 51酱 No.001-2B黑婚纱 [53P 2V]": 1
+  },
+  "mediaViews": {
+    "51酱/51酱 No.001-2B黑婚纱 [53P 2V]/No.001-2B黑婚纱 [53P 2V]/02.jpg": 1,
+    "51酱/51酱 No.001-2B黑婚纱 [53P 2V]/No.001-2B黑婚纱 [53P 2V]/04.jpg": 1
+  },
+  "searchQueries": {},
+  "referrers": {
+    "localhost": 5
+  },
+  "conversions": {
+    "media_view": 2
+  }
+}

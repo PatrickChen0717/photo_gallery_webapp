@@ -1,0 +1,38 @@
+<svg width="1920" height="1200" viewBox="0 0 1920 1200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1920" y2="1200" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F6FAFF"/>
+      <stop offset="0.48" stop-color="#EEF4FF"/>
+      <stop offset="1" stop-color="#E9F0FC"/>
+    </linearGradient>
+    <radialGradient id="orbA" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(330 210) rotate(18) scale(470 300)">
+      <stop stop-color="#8DB2F7" stop-opacity="0.36"/>
+      <stop offset="1" stop-color="#8DB2F7" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="orbB" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(1540 320) rotate(-14) scale(430 290)">
+      <stop stop-color="#7CD0E5" stop-opacity="0.3"/>
+      <stop offset="1" stop-color="#7CD0E5" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="orbC" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(960 1010) rotate(2) scale(700 330)">
+      <stop stop-color="#97C3A3" stop-opacity="0.24"/>
+      <stop offset="1" stop-color="#97C3A3" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="grid" width="56" height="56" patternUnits="userSpaceOnUse">
+      <path d="M56 0H0V56" stroke="#3A5D93" stroke-opacity="0.055" stroke-width="1"/>
+    </pattern>
+    <filter id="blur" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="18"/>
+    </filter>
+  </defs>
+
+  <rect width="1920" height="1200" fill="url(#bg)"/>
+  <rect width="1920" height="1200" fill="url(#orbA)"/>
+  <rect width="1920" height="1200" fill="url(#orbB)"/>
+  <rect width="1920" height="1200" fill="url(#orbC)"/>
+  <rect width="1920" height="1200" fill="url(#grid)"/>
+
+  <g filter="url(#blur)" opacity="0.28">
+    <path d="M-120 700C180 580 340 820 560 740C760 660 920 820 1160 760C1390 700 1620 760 1980 650V1200H-120V700Z" fill="#6AA6D9"/>
+    <path d="M-80 930C200 840 360 980 580 930C820 870 960 980 1220 920C1460 860 1680 900 2000 840V1200H-80V930Z" fill="#7FBF8D"/>
+  </g>
+</svg>

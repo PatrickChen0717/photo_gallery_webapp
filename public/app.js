@@ -7,6 +7,7 @@ const GRID_PREVIEW_WIDTH = 280;
 const CARD_PREVIEW_WIDTH = 280;
 const THUMB_QUALITY = 70;
 const THEME_STORAGE_KEY = "photo-share-gallery-theme";
+const LANGUAGE_STORAGE_KEY = "photo-share-gallery-lang";
 const LAYOUT_STORAGE_KEY = "photo-share-gallery-layout";
 const FAVORITES_STORAGE_KEY = "photo-share-gallery-favorites-v1";
 const RECENTS_STORAGE_KEY = "photo-share-gallery-recents-v1";
@@ -17,7 +18,228 @@ const MIN_PREVIEW_HEIGHT_RATIO = 0.35;
 const MAX_PREVIEW_HEIGHT_RATIO = 3.2;
 const PREVIEW_SLOTS = 4;
 const VIEWER_ANIM_MS = 180;
+const PANEL_SWITCH_MS = 240;
 const MAX_RECENT_ITEMS = 20;
+const HERO_ROTATE_MS = 4200;
+
+function detectLanguage() {
+  try {
+    const stored = localStorage.getItem(LANGUAGE_STORAGE_KEY);
+    if (stored === "en" || stored === "zh") {
+      return stored;
+    }
+  } catch (_error) {
+    // Ignore local storage access errors.
+  }
+  const langs = Array.isArray(navigator.languages) ? navigator.languages : [navigator.language || "en"];
+  const normalized = langs
+    .map((value) => String(value || "").toLowerCase())
+    .find((value) => value);
+  return normalized && normalized.startsWith("zh") ? "zh" : "en";
+}
+
+const UI_LANG = detectLanguage();
+
+const I18N = {
+  en: {
+    page_title: "Photo Share Gallery",
+    brand_kicker: "Atlas Gallery",
+    brand_sub: "Professional media showcase workspace",
+    hero_eyebrow: "Commercial-ready media platform",
+    hero_title: "Atlas Gallery Pro",
+    hero_copy:
+      "Curate collections, spotlight media, and manage a production-grade library with faster navigation and polished presentation controls.",
+    search_placeholder: "Search a collection name",
+    search_folders: "Search collections",
+    search: "Search",
+    display_sort_controls: "Display and sorting controls",
+    appearance_sorting: "Appearance & Sorting",
+    appearance_presets: "Appearance presets",
+    appearance: "Appearance",
+    theme_warm: "Warm",
+    theme_paper: "Paper",
+    theme_studio: "Studio",
+    theme_forest: "Forest",
+    language: "Language",
+    library_controls: "Library controls",
+    folder_scope: "Collection Scope",
+    all_folders: "All collections",
+    favorites_only: "Favorites only",
+    recently_opened: "Recently opened",
+    folder_sort: "Collection Sort",
+    name_asc: "Name A-Z",
+    name_desc: "Name Z-A",
+    most_media_first: "Most media first",
+    subfolder_scope: "Collection Scope",
+    all_subfolders: "All collections",
+    subfolder_sort: "Collection Sort",
+    media_type: "Media Type",
+    images_videos: "Images + Videos",
+    images_only: "Images only",
+    videos_only: "Videos only",
+    media_sort: "Media Sort",
+    subfolder_card_size: "Collection Card Size",
+    recent_folders: "Recent collections",
+    folders: "Collections",
+    images: "images",
+    videos: "videos",
+    archives: "archives",
+    focus_folders: "Focus collections",
+    show_details: "Show details",
+    select_folder_prompt: "Select a collection to load its media grid.",
+    media_viewer: "Media viewer",
+    media_thumbnails: "Media thumbnails",
+    thumbnails: "Thumbnails",
+    previous_media: "Previous media",
+    previous: "Previous",
+    close_viewer: "Close viewer",
+    close: "Close",
+    next_media: "Next media",
+    next: "Next",
+    on_demand: "On demand",
+    loading: "Loading...",
+    visible_suffix: "visible",
+    no_folders_match: "No collections matched current filters.",
+    toggle_favorite_folder: "Toggle favorite collection",
+    scan_on_open: "Scan on open",
+    categories: "categories",
+    open_folder: "Open collection",
+    showing_visible_cards_of: "Showing {visible} visible cards of {total} images",
+    toggle_favorite_subfolder: "Toggle favorite collection",
+    open_to_scan: "Open to scan",
+    archives_still_here: "Archives in this collection",
+    archive_files_detected: "{count} archive files detected.",
+    showing_first_20_archives: "Showing the first 20 archives.",
+    subfolder: "Collection",
+    folder: "Collection",
+    back_to_folders: "Back to collections",
+    images_in_folder: "Images In This Collection",
+    videos_in_folder: "Videos In This Collection",
+    subfolders: "collections",
+    back_to_all_folders: "Back to all collections",
+    folder_list: "Collection List",
+    use_favorites_hint: "Use favorites and recent filters to focus large collections.",
+    no_subfolders_match: "No collections matched current filters.",
+    no_images_match: "No images match current media filters.",
+    request_failed: "Request failed.",
+    loading_folder: "Loading collection...",
+    no_thumbnails_available: "No thumbnails available for this item.",
+    open_media_aria: "Open media {index}"
+  },
+  zh: {
+    page_title: "图片分享画廊",
+    brand_kicker: "Atlas 画廊",
+    brand_sub: "专业媒体展示工作区",
+    hero_eyebrow: "商用级媒体平台",
+    hero_title: "Atlas Gallery Pro",
+    hero_copy: "集中管理合集、展示媒体内容，以更快的导航和更专业的呈现方式运营高质量素材库。",
+    search_placeholder: "搜索合集名称",
+    search_folders: "搜索合集",
+    search: "搜索",
+    display_sort_controls: "显示与排序控制",
+    appearance_sorting: "外观与排序",
+    appearance_presets: "外观预设",
+    appearance: "外观",
+    theme_warm: "暖色",
+    theme_paper: "纸感",
+    theme_studio: "工作室",
+    theme_forest: "森林",
+    language: "语言",
+    library_controls: "资源库控制",
+    folder_scope: "合集范围",
+    all_folders: "全部合集",
+    favorites_only: "仅收藏",
+    recently_opened: "最近打开",
+    folder_sort: "合集排序",
+    name_asc: "名称 A-Z",
+    name_desc: "名称 Z-A",
+    most_media_first: "媒体数量优先",
+    subfolder_scope: "合集范围",
+    all_subfolders: "全部合集",
+    subfolder_sort: "合集排序",
+    media_type: "媒体类型",
+    images_videos: "图片 + 视频",
+    images_only: "仅图片",
+    videos_only: "仅视频",
+    media_sort: "媒体排序",
+    subfolder_card_size: "合集卡片大小",
+    recent_folders: "最近合集",
+    folders: "合集",
+    images: "张图片",
+    videos: "个视频",
+    archives: "个压缩包",
+    focus_folders: "聚焦合集",
+    show_details: "显示详情",
+    select_folder_prompt: "选择一个合集以加载媒体网格。",
+    media_viewer: "媒体查看器",
+    media_thumbnails: "媒体缩略图",
+    thumbnails: "缩略图",
+    previous_media: "上一项媒体",
+    previous: "上一张",
+    close_viewer: "关闭查看器",
+    close: "关闭",
+    next_media: "下一项媒体",
+    next: "下一张",
+    on_demand: "按需加载",
+    loading: "加载中...",
+    visible_suffix: "可见",
+    no_folders_match: "没有匹配当前筛选条件的合集。",
+    toggle_favorite_folder: "切换收藏合集",
+    scan_on_open: "打开后扫描",
+    categories: "个分类",
+    open_folder: "打开合集",
+    showing_visible_cards_of: "显示 {visible} / {total} 张可见图片卡片",
+    toggle_favorite_subfolder: "切换收藏合集",
+    open_to_scan: "打开后扫描",
+    archives_still_here: "该合集中的压缩包",
+    archive_files_detected: "检测到 {count} 个压缩包文件。",
+    showing_first_20_archives: "仅显示前 20 个压缩包。",
+    subfolder: "合集",
+    folder: "合集",
+    back_to_folders: "返回合集",
+    images_in_folder: "该合集中的图片",
+    videos_in_folder: "该合集中的视频",
+    subfolders: "个合集",
+    back_to_all_folders: "返回全部合集",
+    folder_list: "合集列表",
+    use_favorites_hint: "可用收藏和最近筛选快速聚焦大型合集。",
+    no_subfolders_match: "没有匹配当前筛选条件的合集。",
+    no_images_match: "当前媒体筛选下没有图片。",
+    request_failed: "请求失败。",
+    loading_folder: "正在加载合集...",
+    no_thumbnails_available: "此项目暂无缩略图。",
+    open_media_aria: "打开媒体 {index}"
+  }
+};
+
+function t(key, vars = {}) {
+  const langMap = I18N[UI_LANG] || I18N.en;
+  const fallback = I18N.en[key] || key;
+  const template = langMap[key] || fallback;
+  return template.replace(/\{(\w+)\}/g, (_match, name) => {
+    if (Object.prototype.hasOwnProperty.call(vars, name)) {
+      return String(vars[name]);
+    }
+    return `{${name}}`;
+  });
+}
+
+function applyStaticTranslations() {
+  document.documentElement.lang = UI_LANG === "zh" ? "zh-CN" : "en";
+  document.querySelectorAll("[data-i18n]").forEach((node) => {
+    node.textContent = t(node.dataset.i18n);
+  });
+  document.querySelectorAll("[data-i18n-placeholder]").forEach((node) => {
+    node.setAttribute("placeholder", t(node.dataset.i18nPlaceholder));
+  });
+  document.querySelectorAll("[data-i18n-title]").forEach((node) => {
+    node.setAttribute("title", t(node.dataset.i18nTitle));
+  });
+  document.querySelectorAll("[data-i18n-aria-label]").forEach((node) => {
+    node.setAttribute("aria-label", t(node.dataset.i18nAriaLabel));
+  });
+  syncLanguageButtons();
+}
 
 const state = {
   albums: [],
@@ -43,6 +265,12 @@ const state = {
     mediaSort: "name-asc"
   },
   subfolderCardSize: 220,
+  heroCover: {
+    timer: null,
+    activeIndex: 0
+  },
+  panelSwitchTimer: null,
+  folderFocusTimer: null,
   viewer: {
     items: [],
     currentIndex: -1
@@ -62,6 +290,7 @@ const state = {
 
 const elements = {
   stats: document.getElementById("stats"),
+  heroCover: document.getElementById("heroCover"),
   albumCount: document.getElementById("albumCount"),
   albumList: document.getElementById("albumList"),
   albumDetail: document.getElementById("albumDetail"),
@@ -79,6 +308,7 @@ const elements = {
   quickAccess: document.getElementById("quickAccess"),
   recentAlbumChips: document.getElementById("recentAlbumChips"),
   themeButtons: Array.from(document.querySelectorAll("[data-theme-option]")),
+  languageButtons: Array.from(document.querySelectorAll("[data-lang-option]")),
   viewer: document.getElementById("viewer"),
   viewerImage: document.getElementById("viewerImage"),
   viewerVideo: document.getElementById("viewerVideo"),
@@ -194,18 +424,43 @@ function applyTheme(themeName) {
   });
 }
 
+function syncLanguageButtons() {
+  elements.languageButtons.forEach((button) => {
+    button.dataset.active = button.getAttribute("data-lang-option") === UI_LANG ? "true" : "false";
+  });
+}
+
 function applyFolderFocusMode(isFocused) {
+  const nextFocused = !!isFocused;
+  const changed = state.folderFocusMode !== nextFocused;
+
   state.folderFocusMode = !!isFocused;
   document.body.dataset.folderFocus = state.folderFocusMode ? "true" : "false";
   localStorage.setItem(LAYOUT_STORAGE_KEY, state.folderFocusMode ? "focus" : "default");
   elements.focusFoldersButton.setAttribute(
     "aria-label",
-    state.folderFocusMode ? "Show details" : "Focus folders"
+    state.folderFocusMode ? t("show_details") : t("focus_folders")
   );
   elements.focusFoldersButton.setAttribute(
     "title",
-    state.folderFocusMode ? "Show details" : "Focus folders"
+    state.folderFocusMode ? t("show_details") : t("focus_folders")
   );
+
+  if (
+    changed &&
+    !window.matchMedia("(prefers-reduced-motion: reduce)").matches
+  ) {
+    if (state.folderFocusTimer) {
+      clearTimeout(state.folderFocusTimer);
+      state.folderFocusTimer = null;
+    }
+    document.body.classList.remove("is-switching-to-focus", "is-switching-to-detail");
+    document.body.classList.add(state.folderFocusMode ? "is-switching-to-focus" : "is-switching-to-detail");
+    state.folderFocusTimer = setTimeout(() => {
+      document.body.classList.remove("is-switching-to-focus", "is-switching-to-detail");
+      state.folderFocusTimer = null;
+    }, PANEL_SWITCH_MS + 40);
+  }
 }
 
 function initializeTheme() {
@@ -250,12 +505,20 @@ function persistFilters() {
 function initializeOrganizationState() {
   const storedFavorites = readJsonStorage(FAVORITES_STORAGE_KEY, {});
   state.favorites.albums = new Set(toArray(storedFavorites.albums));
-  state.favorites.subfolders = new Set(toArray(storedFavorites.subfolders));
+  state.favorites.subfolders = new Set(
+    toArray(storedFavorites.subfolders).length
+      ? toArray(storedFavorites.subfolders)
+      : toArray(storedFavorites.collections)
+  );
 
   const storedRecents = readJsonStorage(RECENTS_STORAGE_KEY, {});
   state.recents = {
     albums: toArray(storedRecents.albums).slice(0, MAX_RECENT_ITEMS),
-    subfolders: toArray(storedRecents.subfolders).slice(0, MAX_RECENT_ITEMS),
+    subfolders: (
+      toArray(storedRecents.subfolders).length
+        ? toArray(storedRecents.subfolders)
+        : toArray(storedRecents.collections)
+    ).slice(0, MAX_RECENT_ITEMS),
     media: toArray(storedRecents.media).slice(0, MAX_RECENT_ITEMS)
   };
 
@@ -475,26 +738,111 @@ function initializeLayoutMode() {
 function renderStats(payload) {
   elements.stats.innerHTML = `
     <article class="stat-card">
-      <span class="stat-label">Folders</span>
+      <span class="stat-label">${t("folders")}</span>
       <strong class="stat-value">${formatNumber(payload.totals.albums)}</strong>
     </article>
     <article class="stat-card">
-      <span class="stat-label">Images</span>
-      <strong class="stat-value">${Number.isFinite(payload.totals.images) ? formatNumber(payload.totals.images) : "On demand"}</strong>
+      <span class="stat-label">${UI_LANG === "zh" ? "图片" : "Images"}</span>
+      <strong class="stat-value">${Number.isFinite(payload.totals.images) ? formatNumber(payload.totals.images) : t("on_demand")}</strong>
     </article>
     <article class="stat-card">
-      <span class="stat-label">Videos</span>
-      <strong class="stat-value">${Number.isFinite(payload.totals.videos) ? formatNumber(payload.totals.videos) : "On demand"}</strong>
+      <span class="stat-label">${UI_LANG === "zh" ? "视频" : "Videos"}</span>
+      <strong class="stat-value">${Number.isFinite(payload.totals.videos) ? formatNumber(payload.totals.videos) : t("on_demand")}</strong>
     </article>
     <article class="stat-card">
-      <span class="stat-label">Archives</span>
-      <strong class="stat-value">${Number.isFinite(payload.totals.archives) ? formatNumber(payload.totals.archives) : "On demand"}</strong>
+      <span class="stat-label">${UI_LANG === "zh" ? "压缩包" : "Archives"}</span>
+      <strong class="stat-value">${Number.isFinite(payload.totals.archives) ? formatNumber(payload.totals.archives) : t("on_demand")}</strong>
     </article>
   `;
 }
 
+function stopHeroCoverRotation() {
+  if (state.heroCover.timer) {
+    clearInterval(state.heroCover.timer);
+    state.heroCover.timer = null;
+  }
+}
+
+function renderHeroCover(albums = []) {
+  if (!elements.heroCover) {
+    return;
+  }
+
+  stopHeroCoverRotation();
+
+  const previewPaths = [];
+  const seen = new Set();
+
+  albums.forEach((album) => {
+    (album.previewImages || []).forEach((relativePath) => {
+      if (!relativePath || seen.has(relativePath)) {
+        return;
+      }
+      seen.add(relativePath);
+      previewPaths.push(relativePath);
+    });
+  });
+
+  const coverItems = previewPaths.slice(0, 6);
+  if (!coverItems.length) {
+    elements.heroCover.innerHTML = `<div class="hero-cover-empty"></div>`;
+    return;
+  }
+
+  state.heroCover.activeIndex = 0;
+
+  const slideMarkup = coverItems
+    .map(
+      (relativePath, index) =>
+        `<img class="hero-cover-slide ${index === 0 ? "is-active" : ""}" src="${createPreviewUrl(relativePath, 700, THUMB_QUALITY)}" alt="" loading="${index < 2 ? "eager" : "lazy"}">`
+    )
+    .join("");
+
+  const dotMarkup = coverItems
+    .map(
+      (_item, index) =>
+        `<button type="button" class="hero-cover-dot ${index === 0 ? "is-active" : ""}" data-hero-cover-dot="${index}" aria-label="${UI_LANG === "zh" ? `显示封面图 ${index + 1}` : `Show cover image ${index + 1}`}"></button>`
+    )
+    .join("");
+
+  elements.heroCover.innerHTML = `
+    <div class="hero-cover-slides">${slideMarkup}</div>
+    <div class="hero-cover-dots">${dotMarkup}</div>
+  `;
+
+  const slides = Array.from(elements.heroCover.querySelectorAll(".hero-cover-slide"));
+  const dots = Array.from(elements.heroCover.querySelectorAll("[data-hero-cover-dot]"));
+
+  const activateSlide = (nextIndex) => {
+    state.heroCover.activeIndex = nextIndex;
+    slides.forEach((slide, index) => {
+      slide.classList.toggle("is-active", index === nextIndex);
+    });
+    dots.forEach((dot, index) => {
+      dot.classList.toggle("is-active", index === nextIndex);
+    });
+  };
+
+  dots.forEach((dot) => {
+    dot.addEventListener("click", () => {
+      const nextIndex = Number(dot.getAttribute("data-hero-cover-dot"));
+      if (!Number.isFinite(nextIndex) || nextIndex < 0 || nextIndex >= slides.length) {
+        return;
+      }
+      activateSlide(nextIndex);
+    });
+  });
+
+  if (slides.length > 1) {
+    state.heroCover.timer = setInterval(() => {
+      const nextIndex = (state.heroCover.activeIndex + 1) % slides.length;
+      activateSlide(nextIndex);
+    }, HERO_ROTATE_MS);
+  }
+}
+
 function renderAlbumSkeletons(count = 6) {
-  elements.albumCount.textContent = "Loading...";
+  elements.albumCount.textContent = t("loading");
   elements.albumList.innerHTML = Array.from({ length: count }, () => {
     return `
       <article class="album-card album-card-skeleton" aria-hidden="true">
@@ -510,10 +858,10 @@ function renderAlbumSkeletons(count = 6) {
 }
 
 function renderAlbums(albums) {
-  elements.albumCount.textContent = `${formatNumber(albums.length)} visible`;
+  elements.albumCount.textContent = `${formatNumber(albums.length)} ${t("visible_suffix")}`;
 
   if (albums.length === 0) {
-    elements.albumList.innerHTML = `<div class="empty-state">No folders matched current filters.</div>`;
+    elements.albumList.innerHTML = `<div class="empty-state">${t("no_folders_match")}</div>`;
     return;
   }
 
@@ -535,43 +883,43 @@ function renderAlbums(albums) {
                 type="button"
                 class="favorite-button ${state.favorites.albums.has(album.name) ? "is-active" : ""}"
                 data-favorite-album="${escapeHtml(album.name)}"
-                aria-label="Toggle favorite folder"
-                title="Toggle favorite folder"
+                aria-label="${t("toggle_favorite_folder")}"
+                title="${t("toggle_favorite_folder")}"
               >&#9733;</button>
             </div>
             <div class="album-meta">
                 ${
                   Number.isFinite(album.imageCount)
-                    ? `<span>${formatNumber(album.imageCount)} images</span>`
-                    : `<span>Scan on open</span>`
+                    ? `<span>${formatNumber(album.imageCount)} ${t("images")}</span>`
+                    : `<span>${t("scan_on_open")}</span>`
                 }
                 ${
                   Number.isFinite(album.videoCount)
-                    ? `<span>${formatNumber(album.videoCount)} videos</span>`
+                    ? `<span>${formatNumber(album.videoCount)} ${t("videos")}</span>`
                     : ``
                 }
                 ${
                   Number.isFinite(album.subfolderCount)
-                  ? `<span>${formatNumber(album.subfolderCount)} categories</span>`
+                  ? `<span>${formatNumber(album.subfolderCount)} ${t("categories")}</span>`
                   : ``
               }
               ${
                 Number.isFinite(album.archiveCount)
-                  ? `<span>${formatNumber(album.archiveCount)} archives</span>`
+                  ? `<span>${formatNumber(album.archiveCount)} ${t("archives")}</span>`
                   : ``
               }
               ${
                 Number.isFinite(album.folderCount)
-                  ? `<span>${formatNumber(album.folderCount)} folders</span>`
+                  ? `<span>${formatNumber(album.folderCount)} ${UI_LANG === "zh" ? "个合集" : "collections"}</span>`
                   : ``
               }
             </div>
-            <button type="button" class="icon-button open-folder-button" data-album-name="${escapeHtml(album.name)}" aria-label="Open folder" title="Open folder">
+            <button type="button" class="icon-button open-folder-button" data-album-name="${escapeHtml(album.name)}" aria-label="${t("open_folder")}" title="${t("open_folder")}">
               <svg viewBox="0 0 24 24" aria-hidden="true">
                 <path d="M3.5 8.5h6l2 2h9v7.5a2 2 0 0 1-2 2h-13a2 2 0 0 1-2-2z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"></path>
                 <path d="M3.5 8.5v-2a2 2 0 0 1 2-2h4.6l1.6 2h6.8a2 2 0 0 1 2 2v2" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"></path>
               </svg>
-              <span class="sr-only">Open folder</span>
+              <span class="sr-only">${t("open_folder")}</span>
             </button>
           </div>
         </article>
@@ -635,7 +983,9 @@ function isWindowScrollMode() {
   return window.matchMedia("(max-width: 980px)").matches;
 }
 
-function setMobilePane(mode) {
+function setMobilePane(mode, options = {}) {
+  const animate = options.animate !== false;
+  const previousMode = state.mobilePane;
   state.mobilePane = mode;
   document.body.dataset.mobilePane = mode;
 
@@ -645,15 +995,48 @@ function setMobilePane(mode) {
     return;
   }
 
-  if (isWindowScrollMode()) {
-    folderPanel.style.display = mode === "detail" ? "none" : "";
-    detailPanel.style.display = mode === "folders" ? "none" : "";
-    const activePanel = mode === "detail" ? detailPanel : folderPanel;
-    triggerPaneReveal(activePanel);
-  } else {
+  if (!isWindowScrollMode()) {
     folderPanel.style.display = "";
     detailPanel.style.display = "";
+    folderPanel.classList.remove("pane-switch-in", "pane-switch-out");
+    detailPanel.classList.remove("pane-switch-in", "pane-switch-out");
+    return;
   }
+
+  const activePanel = mode === "detail" ? detailPanel : folderPanel;
+  const inactivePanel = mode === "detail" ? folderPanel : detailPanel;
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  if (!animate || reduceMotion || previousMode === mode) {
+    folderPanel.style.display = mode === "detail" ? "none" : "";
+    detailPanel.style.display = mode === "folders" ? "none" : "";
+    folderPanel.classList.remove("pane-switch-in", "pane-switch-out");
+    detailPanel.classList.remove("pane-switch-in", "pane-switch-out");
+    triggerPaneReveal(activePanel);
+    return;
+  }
+
+  if (state.panelSwitchTimer) {
+    clearTimeout(state.panelSwitchTimer);
+    state.panelSwitchTimer = null;
+  }
+
+  folderPanel.style.display = "";
+  detailPanel.style.display = "";
+  folderPanel.classList.remove("pane-switch-in", "pane-switch-out");
+  detailPanel.classList.remove("pane-switch-in", "pane-switch-out");
+  activePanel.offsetHeight;
+  activePanel.classList.add("pane-switch-in");
+  inactivePanel.classList.add("pane-switch-out");
+
+  state.panelSwitchTimer = setTimeout(() => {
+    inactivePanel.style.display = "none";
+    activePanel.style.display = "";
+    folderPanel.classList.remove("pane-switch-in", "pane-switch-out");
+    detailPanel.classList.remove("pane-switch-in", "pane-switch-out");
+    triggerPaneReveal(activePanel);
+    state.panelSwitchTimer = null;
+  }, PANEL_SWITCH_MS);
 }
 
 function triggerPaneReveal(panelElement) {
@@ -880,9 +1263,9 @@ function hydratePreviewGridImages(container) {
 }
 
 function normalizeAlbumDetail(album) {
-  let normalizedSubfolders = Array.isArray(album.subfolders) ? album.subfolders : [];
+  let normalizedCollections = Array.isArray(album.collections) ? album.collections : [];
 
-  if (!normalizedSubfolders.length && Array.isArray(album.images) && album.images.length) {
+  if (!normalizedCollections.length && Array.isArray(album.images) && album.images.length) {
     const subfolderMap = new Map();
     const looseImages = [];
 
@@ -913,10 +1296,10 @@ function normalizeAlbumDetail(album) {
       }
     });
 
-    normalizedSubfolders = Array.from(subfolderMap.values()).sort((a, b) => a.name.localeCompare(b.name, "en"));
+    normalizedCollections = Array.from(subfolderMap.values()).sort((a, b) => a.name.localeCompare(b.name, "en"));
 
     if (looseImages.length) {
-      normalizedSubfolders.unshift({
+      normalizedCollections.unshift({
         name: ".",
         path: ".",
         imageCount: looseImages.length,
@@ -928,14 +1311,14 @@ function normalizeAlbumDetail(album) {
 
   return {
     ...album,
-    subfolders: normalizedSubfolders,
+    collections: normalizedCollections,
     archives: Array.isArray(album.archives) ? album.archives : [],
     archiveCount: Number.isFinite(album.archiveCount)
       ? album.archiveCount
       : Array.isArray(album.archives)
         ? album.archives.length
         : 0,
-    folderCount: Number.isFinite(album.folderCount) ? album.folderCount : normalizedSubfolders.length,
+    folderCount: Number.isFinite(album.folderCount) ? album.folderCount : normalizedCollections.length,
     imageCount: Number.isFinite(album.imageCount)
       ? album.imageCount
       : Array.isArray(album.images)
@@ -1055,7 +1438,10 @@ function renderVirtualizedGrid(force = false) {
   const endIndex = Math.min(images.length, (endRow + 1) * layout.columns);
   const visibleCount = Math.max(0, endIndex - startIndex);
 
-  progress.textContent = `Showing ${formatNumber(visibleCount)} visible cards of ${formatNumber(images.length)} images`;
+  progress.textContent = t("showing_visible_cards_of", {
+    visible: formatNumber(visibleCount),
+    total: formatNumber(images.length)
+  });
 
   ensurePool(grid, visibleCount);
 
@@ -1118,13 +1504,13 @@ function renderAlbumDetail(album) {
     .map(
       (subfolder) => `
         <article class="subfolder-card">
-          <button
-            type="button"
-            class="favorite-button favorite-button-subfolder ${state.favorites.subfolders.has(getSubfolderKey(album.name, subfolder.path || subfolder.name)) ? "is-active" : ""}"
-            data-favorite-subfolder="${escapeHtml(subfolder.path || subfolder.name)}"
-            aria-label="Toggle favorite subfolder"
-            title="Toggle favorite subfolder"
-          >&#9733;</button>
+	          <button
+	            type="button"
+	            class="favorite-button favorite-button-subfolder ${state.favorites.subfolders.has(getSubfolderKey(album.name, subfolder.path || subfolder.name)) ? "is-active" : ""}"
+	            data-favorite-subfolder="${escapeHtml(subfolder.path || subfolder.name)}"
+	            aria-label="${t("toggle_favorite_subfolder")}"
+	            title="${t("toggle_favorite_subfolder")}"
+	          >&#9733;</button>
           <button type="button" class="subfolder-button" data-subfolder-path="${escapeHtml(subfolder.path || subfolder.name)}">
               <div class="subfolder-preview">
               ${
@@ -1136,16 +1522,16 @@ function renderAlbumDetail(album) {
             <div class="subfolder-content">
               <h3>${escapeHtml(subfolder.name)}</h3>
               <div class="album-meta">
-                ${
-                  Number.isFinite(subfolder.imageCount)
-                    ? `<span>${formatNumber(subfolder.imageCount)} images</span>`
-                    : `<span>Open to scan</span>`
-                }
-                ${
-                  Number.isFinite(subfolder.videoCount)
-                    ? `<span>${formatNumber(subfolder.videoCount)} videos</span>`
-                    : ``
-                }
+	                ${
+	                  Number.isFinite(subfolder.imageCount)
+	                    ? `<span>${formatNumber(subfolder.imageCount)} ${t("images")}</span>`
+	                    : `<span>${t("open_to_scan")}</span>`
+	                }
+	                ${
+	                  Number.isFinite(subfolder.videoCount)
+	                    ? `<span>${formatNumber(subfolder.videoCount)} ${t("videos")}</span>`
+	                    : ``
+	                }
               </div>
             </div>
           </button>
@@ -1154,57 +1540,57 @@ function renderAlbumDetail(album) {
     )
     .join("");
 
-  const archivesMarkup = currentNode.archives.length
-    ? `
-      <section class="archive-list">
-        <h3>Archives still in this folder</h3>
-        <p>${formatNumber(currentNode.archiveCount)} archive files detected.</p>
-        <ul>
-          ${currentNode.archives
-            .slice(0, 20)
-            .map((archive) => `<li>${escapeHtml(archive.name)} (${formatSize(archive.sizeBytes)})</li>`)
-            .join("")}
-        </ul>
-        ${currentNode.archives.length > 20 ? `<p>Showing the first 20 archives.</p>` : ""}
-      </section>
-    `
-    : "";
+	  const archivesMarkup = currentNode.archives.length
+	    ? `
+	      <section class="archive-list">
+	        <h3>${t("archives_still_here")}</h3>
+	        <p>${t("archive_files_detected", { count: formatNumber(currentNode.archiveCount) })}</p>
+	        <ul>
+	          ${currentNode.archives
+	            .slice(0, 20)
+	            .map((archive) => `<li>${escapeHtml(archive.name)} (${formatSize(archive.sizeBytes)})</li>`)
+	            .join("")}
+	        </ul>
+	        ${currentNode.archives.length > 20 ? `<p>${t("showing_first_20_archives")}</p>` : ""}
+	      </section>
+	    `
+	    : "";
 
   elements.albumDetail.classList.remove("empty-state");
   if (state.selectedSubfolder) {
     elements.albumDetail.innerHTML = `
-      <div class="detail-header">
-        <div>
-          <p class="eyebrow">Subfolder</p>
-          <h2>${escapeHtml(currentNode.name)}</h2>
-        </div>
-        <button type="button" class="subfolder-back-button icon-button" data-clear-subfolder aria-label="Back to folders" title="Back to folders">
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M14.8 5.4L8.2 12l6.6 6.6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path>
-          </svg>
-          <span class="sr-only">Back to folders</span>
-        </button>
-      </div>
+	      <div class="detail-header">
+	        <div>
+	          <p class="eyebrow">${t("subfolder")}</p>
+	          <h2>${escapeHtml(currentNode.name)}</h2>
+	        </div>
+	        <button type="button" class="subfolder-back-button icon-button detail-corner-back" data-clear-subfolder aria-label="${t("back_to_folders")}" title="${t("back_to_folders")}">
+	          <svg viewBox="0 0 24 24" aria-hidden="true">
+	            <path d="M14.8 5.4L8.2 12l6.6 6.6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path>
+	          </svg>
+	          <span class="sr-only">${t("back_to_folders")}</span>
+	        </button>
+	      </div>
       ${archivesMarkup}
       <section class="subfolder-images" data-subfolder-images ${shouldShowImageGrid ? "" : "hidden"}>
-        <div class="subfolder-section-header subfolder-active-header">
-          <div>
-            <p class="eyebrow">Images In This Folder</p>
-            <h3 data-active-subfolder-title>${escapeHtml(currentNode.name)}</h3>
-          </div>
-        </div>
+	        <div class="subfolder-section-header subfolder-active-header">
+	          <div>
+	            <p class="eyebrow">${t("images_in_folder")}</p>
+	            <h3 data-active-subfolder-title>${escapeHtml(currentNode.name)}</h3>
+	          </div>
+	        </div>
         <div class="image-progress-row">
           <p class="image-progress" data-image-progress></p>
         </div>
         <section class="image-grid image-grid-virtual" data-image-grid></section>
       </section>
       <section class="subfolder-videos" data-subfolder-videos ${shouldShowVideoGrid ? "" : "hidden"}>
-        <div class="subfolder-section-header subfolder-active-header">
-          <div>
-            <p class="eyebrow">Videos In This Folder</p>
-            <h3>${escapeHtml(currentNode.name)}</h3>
-          </div>
-        </div>
+	        <div class="subfolder-section-header subfolder-active-header">
+	          <div>
+	            <p class="eyebrow">${t("videos_in_folder")}</p>
+	            <h3>${escapeHtml(currentNode.name)}</h3>
+	          </div>
+	        </div>
         <div class="video-grid">
           ${visibleVideos
             .map(
@@ -1212,9 +1598,9 @@ function renderAlbumDetail(album) {
                 <article class="media-card video-card">
                   <button type="button" class="video-button" data-video-path="${escapeHtml(video.relativePath)}">
                     <div class="video-thumb">
-                      <video muted preload="metadata" playsinline src="${createMediaUrl(video.relativePath)}"></video>
-                      <span class="video-badge">Video</span>
-                    </div>
+	                      <video muted preload="metadata" playsinline src="${createMediaUrl(video.relativePath)}"></video>
+	                      <span class="video-badge">${UI_LANG === "zh" ? "视频" : "Video"}</span>
+	                    </div>
                     <div class="image-caption">${escapeHtml(video.directory === "." ? video.name : video.relativePath)}</div>
                   </button>
                 </article>
@@ -1226,31 +1612,37 @@ function renderAlbumDetail(album) {
     `;
   } else {
     elements.albumDetail.innerHTML = `
-      <div class="detail-header">
-        <div>
-          <p class="eyebrow">Folder</p>
-          <h2>${escapeHtml(album.name)}</h2>
-        </div>
-        <div class="detail-header-actions">
-          <button type="button" class="mobile-folder-back-button" data-mobile-show-folders>Folder List</button>
-          <div class="album-meta">
-            <span>${formatNumber(visibleSubfolders.length)} subfolders</span>
-            <span>${formatNumber(album.videoCount || 0)} videos</span>
-            <span>${formatNumber(album.archiveCount || 0)} archives</span>
-          </div>
-        </div>
-      </div>
-      ${archivesMarkup}
-      <section class="subfolder-section">
-        <div class="subfolder-section-header">
-          <div>
-            <h3>Folders</h3>
-            <p>Use favorites and recent filters to focus large collections.</p>
-          </div>
-        </div>
-        <div class="subfolder-grid">${subfolderCards || `<div class="empty-state">No subfolders matched current filters.</div>`}</div>
-      </section>
-    `;
+	      <div class="detail-header">
+	        <div>
+	          <p class="eyebrow">${t("folder")}</p>
+	          <h2>${escapeHtml(album.name)}</h2>
+	        </div>
+	        <div class="detail-header-actions">
+	          <div class="album-meta detail-header-meta">
+	            <span>${formatNumber(visibleSubfolders.length)} ${t("subfolders")}</span>
+	            <span>${formatNumber(album.videoCount || 0)} ${t("videos")}</span>
+	            <span>${formatNumber(album.archiveCount || 0)} ${t("archives")}</span>
+	          </div>
+	          <button type="button" class="detail-back-button subfolder-back-button icon-button detail-corner-back" data-show-folder-overview aria-label="${t("back_to_all_folders")}" title="${t("back_to_all_folders")}">
+	            <svg viewBox="0 0 24 24" aria-hidden="true">
+	              <path d="M14.8 5.4L8.2 12l6.6 6.6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path>
+	            </svg>
+	            <span class="sr-only">${t("back_to_all_folders")}</span>
+	          </button>
+	          <button type="button" class="mobile-folder-back-button" data-mobile-show-folders>${t("folder_list")}</button>
+	        </div>
+	      </div>
+	      ${archivesMarkup}
+	      <section class="subfolder-section">
+	        <div class="subfolder-section-header">
+	          <div>
+	            <h3>${t("folders")}</h3>
+	            <p>${t("use_favorites_hint")}</p>
+	          </div>
+	        </div>
+	        <div class="subfolder-grid">${subfolderCards || `<div class="empty-state">${t("no_subfolders_match")}</div>`}</div>
+	      </section>
+	    `;
   }
 
   queuePreviewHydration(elements.albumDetail.querySelectorAll(".subfolder-preview"));
@@ -1284,21 +1676,21 @@ function renderAlbumDetail(album) {
       grid.innerHTML = "";
       grid.style.height = "0px";
     }
-    if (progress) {
-      progress.textContent = state.selectedSubfolder
-        ? "No images match current media filters."
-        : "";
-    }
-  }
+	    if (progress) {
+	      progress.textContent = state.selectedSubfolder
+	        ? t("no_images_match")
+	        : "";
+	    }
+	  }
 }
 
 async function fetchJson(url) {
   console.log("[gallery-ui] fetch start", url);
   const response = await fetch(url, { cache: "no-store" });
   if (!response.ok) {
-    const payload = await response.json().catch(() => ({ error: "Request failed." }));
-    console.error("[gallery-ui] fetch error", url, payload.error || "Request failed.");
-    throw new Error(payload.error || "Request failed.");
+    const payload = await response.json().catch(() => ({ error: t("request_failed") }));
+    console.error("[gallery-ui] fetch error", url, payload.error || t("request_failed"));
+    throw new Error(payload.error || t("request_failed"));
   }
   const data = await response.json();
   console.log("[gallery-ui] fetch done", url, data);
@@ -1311,6 +1703,7 @@ async function loadAlbums(search = "") {
 
   const payload = await fetchJson(`/api/albums?search=${encodeURIComponent(search)}`);
   state.albums = payload.albums;
+  renderHeroCover(payload.albums);
   renderStats(payload);
   renderFilteredAlbums();
 }
@@ -1319,7 +1712,7 @@ async function loadAlbum(name) {
   console.log("[gallery-ui] loadAlbum", name);
   cleanupVirtualizer();
   elements.albumDetail.classList.remove("empty-state");
-  elements.albumDetail.innerHTML = `<div class="empty-state">Loading folder...</div>`;
+  elements.albumDetail.innerHTML = `<div class="empty-state">${t("loading_folder")}</div>`;
 
   const album = await fetchJson(`/api/album?name=${encodeURIComponent(name)}`);
   state.selectedAlbum = normalizeAlbumDetail(album);
@@ -1484,7 +1877,7 @@ function renderViewerFilmstrip() {
 
   const { items } = state.viewer;
   if (!Array.isArray(items) || !items.length) {
-    strip.innerHTML = `<p class="viewer-filmstrip-empty">No thumbnails available for this item.</p>`;
+    strip.innerHTML = `<p class="viewer-filmstrip-empty">${t("no_thumbnails_available")}</p>`;
     return;
   }
 
@@ -1499,7 +1892,7 @@ function renderViewerFilmstrip() {
           type="button"
           class="viewer-thumb ${isVideo ? "viewer-thumb-video" : ""}"
           data-viewer-index="${index}"
-          aria-label="Open media ${index + 1}"
+          aria-label="${t("open_media_aria", { index: index + 1 })}"
         >
           ${thumbMarkup}
         </button>
@@ -1621,6 +2014,24 @@ elements.themeButtons.forEach((button) => {
   });
 });
 
+elements.languageButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    const nextLang = button.getAttribute("data-lang-option");
+    if (nextLang !== "en" && nextLang !== "zh") {
+      return;
+    }
+    if (nextLang === UI_LANG) {
+      return;
+    }
+    try {
+      localStorage.setItem(LANGUAGE_STORAGE_KEY, nextLang);
+    } catch (_error) {
+      // Ignore storage write errors.
+    }
+    window.location.reload();
+  });
+});
+
 elements.albumDetail.addEventListener("click", (event) => {
   const subfolderButton = event.target.closest("[data-subfolder-path]");
   if (subfolderButton) {
@@ -1638,6 +2049,15 @@ elements.albumDetail.addEventListener("click", (event) => {
   if (mobileListButton) {
     setMobilePane("folders");
   }
+
+  const folderOverviewButton = event.target.closest("[data-show-folder-overview]");
+  if (folderOverviewButton) {
+    if (isWindowScrollMode()) {
+      setMobilePane("folders");
+    } else {
+      applyFolderFocusMode(true);
+    }
+  }
 });
 
 window.addEventListener("resize", () => {
@@ -1645,6 +2065,16 @@ window.addEventListener("resize", () => {
     setMobilePane("folders");
   } else if (state.selectedAlbum) {
     setMobilePane("detail");
+  }
+});
+
+window.addEventListener("beforeunload", () => {
+  stopHeroCoverRotation();
+  if (state.panelSwitchTimer) {
+    clearTimeout(state.panelSwitchTimer);
+  }
+  if (state.folderFocusTimer) {
+    clearTimeout(state.folderFocusTimer);
   }
 });
 
@@ -1697,10 +2127,13 @@ function showError(error) {
   elements.albumList.innerHTML = `<div class="empty-state">${escapeHtml(error.message)}</div>`;
 }
 
+applyStaticTranslations();
 initializeTheme();
 initializeOrganizationState();
 syncFilterControls();
 initializeLayoutMode();
-setMobilePane("folders");
+setMobilePane("folders", { animate: false });
 setViewerVisibility(false);
+renderHeroCover([]);
 loadAlbums().catch(showError);
+
